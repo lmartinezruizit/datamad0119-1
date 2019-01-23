@@ -1,40 +1,62 @@
-SELECT authors.au_id 'AUTHOR ID', authors.au_lname 'LAST NAME', authors.au_fname 'FIRST NAME', titles.title 'TITLE', publishers.pub_name 'PUBLISHER' 
-FROM authors INNER JOIN titleauthor ON authors.au_id=titleauthor.au_id 
-INNER JOIN titles ON titleauthor.title_id=titles.title_id
-INNER JOIN publishers ON publishers.pub_id=titles.pub_id
-ORDER BY authors.au_id;
+SELECT 
+	a.au_id 'AUTHOR ID', 
+	a.au_lname 'LAST NAME', 
+    a.au_fname 'FIRST NAME', 
+    t.title 'TITLE', 
+    p.pub_name 'PUBLISHER' 
+FROM authors a
+	INNER JOIN titleauthor ta ON a.au_id=ta.au_id 
+	INNER JOIN titles t ON ta.title_id=t.title_id
+	INNER JOIN publishers p ON p.pub_id=t.pub_id
+ORDER BY a.au_id;
 
-SELECT authors.au_id 'AUTHOR ID', authors.au_lname 'LAST NAME', authors.au_fname 'FIRST NAME', 
-titles.title 'TITLE', publishers.pub_name 'PUBLISHER', 
-COUNT(authors.au_id) 'TITLE COUNT'
-FROM authors INNER JOIN titleauthor ON authors.au_id=titleauthor.au_id 
-INNER JOIN titles ON titleauthor.title_id=titles.title_id
-INNER JOIN publishers ON publishers.pub_id=titles.pub_id
-GROUP BY authors.au_id
-ORDER BY authors.au_id;
+SELECT 
+	a.au_id 'AUTHOR ID', 
+    a.au_lname 'LAST NAME', 
+    a.au_fname 'FIRST NAME', 
+    p.pub_name 'PUBLISHER',
+    COUNT(t.title_id) 'TITLE COUNT'
+FROM authors a
+	INNER JOIN titleauthor ta ON a.au_id=ta.au_id 
+	INNER JOIN titles t ON ta.title_id=t.title_id
+	INNER JOIN publishers p ON p.pub_id=t.pub_id
+GROUP BY a.au_id, p.pub_name
+ORDER BY a.au_id DESC, p.pub_name DESC;
 
-SELECT authors.au_id 'AUTHOR ID', authors.au_lname 'LAST NAME', authors.au_fname 'FIRST NAME',
-sum(authors.au_id) 'TOTAL'
-FROM authors INNER JOIN titleauthor ON authors.au_id=titleauthor.au_id 
-INNER JOIN titles ON titleauthor.title_id=titles.title_id
-INNER JOIN sales ON sales.title_id=titles.title_id
-GROUP BY authors.au_id
-ORDER BY count(authors.au_id) DESC
+SELECT 
+	a.au_id 'AUTHOR ID', 
+	a.au_lname 'LAST NAME', 
+    a.au_fname 'FIRST NAME',
+	sum(s.qty) 'TOTAL'
+FROM authors a
+	INNER JOIN titleauthor ta ON a.au_id=ta.au_id 
+	INNER JOIN titles t ON ta.title_id=t.title_id
+	INNER JOIN sales s ON s.title_id=t.title_id
+GROUP BY a.au_id
+ORDER BY sum(s.qty) DESC
 LIMIT 3;
 
-SELECT authors.au_id 'AUTHOR ID', authors.au_lname 'LAST NAME', authors.au_fname 'FIRST NAME',
-sum(authors.au_id) 'TOTAL'
-FROM authors INNER JOIN titleauthor ON authors.au_id=titleauthor.au_id 
-INNER JOIN titles ON titleauthor.title_id=titles.title_id
-INNER JOIN sales ON sales.title_id=titles.title_id
-GROUP BY authors.au_id
-ORDER BY count(authors.au_id) DESC
+SELECT 
+	a.au_id 'AUTHOR ID', 
+    a.au_lname 'LAST NAME', 
+    a.au_fname 'FIRST NAME', 
+	IFNULL(sum(s.qty),0) 'TOTAL'
+FROM authors a 
+	LEFT JOIN titleauthor ta ON a.au_id=ta.au_id 
+	LEFT JOIN titles t ON ta.title_id=t.title_id
+	LEFT JOIN sales s ON s.title_id=t.title_id
+GROUP BY a.au_id
+ORDER BY sum(s.qty) DESC
 LIMIT 23;
 
-SELECT authors.au_id 'AUTHOR ID', authors.au_lname 'LAST NAME', authors.au_fname 'FIRST NAME', 
-sum(titles.royalty+titles.advance) 'PROFIT'
-FROM authors INNER JOIN titleauthor ON authors.au_id=titleauthor.au_id
-INNER JOIN titles ON titleauthor.title_id=titles.title_id
-GROUP by authors.au_id
-ORDER BY sum(titles.royalty*titleauthor.royaltyper*0.01+titles.advance) DESC
+SELECT 
+	a.au_id 'AUTHOR ID', 
+	a.au_lname 'LAST NAME', 
+    a.au_fname 'FIRST NAME', 
+	sum(t.royalty+t.advance) 'PROFIT'
+FROM authors a
+	INNER JOIN titleauthor ta ON a.au_id=ta.au_id
+	INNER JOIN titles t ON ta.title_id=t.title_id
+GROUP by a.au_id
+ORDER BY sum(t.royalty*ta.royaltyper*0.01+t.advance) DESC
 LIMIT 3;
