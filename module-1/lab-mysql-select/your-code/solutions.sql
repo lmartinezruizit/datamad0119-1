@@ -53,10 +53,11 @@ SELECT
 	a.au_id 'AUTHOR ID', 
 	a.au_lname 'LAST NAME', 
     a.au_fname 'FIRST NAME', 
-	sum(t.royalty*ta.royaltyper*0.01+t.advance) 'PROFIT'
+    count(a.au_id),
+	sum(t.royalty*ta.royaltyper*0.01+t.advance)/count(a.au_id) 'PROFIT'
 FROM authors a
 	INNER JOIN titleauthor ta ON a.au_id=ta.au_id
 	INNER JOIN titles t ON ta.title_id=t.title_id
 GROUP by a.au_id
-ORDER BY sum(t.royalty*ta.royaltyper*0.01+t.advance) DESC
+ORDER BY sum(t.royalty*ta.royaltyper*0.01+t.advance)/count(a.au_id) DESC
 LIMIT 3;
