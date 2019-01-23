@@ -50,13 +50,14 @@ ORDER BY sum(s.qty) DESC
 LIMIT 23;
 
 SELECT 
-	a.au_id 'AUTHOR ID', 
+	DISTINCT(a.au_id) 'AUTHOR ID', 
 	a.au_lname 'LAST NAME', 
     a.au_fname 'FIRST NAME',
-	sum(t.royalty*ta.royaltyper*0.01+t.advance)/count(a.au_id) 'PROFIT'
+	sum(t.price * s.qty * t.royalty / 100 * ta.royaltyper / 100) 'PROFIT'
 FROM authors a
 	INNER JOIN titleauthor ta ON a.au_id=ta.au_id
 	INNER JOIN titles t ON ta.title_id=t.title_id
+    INNER JOIN sales s ON s.title_id=t.title_id
 GROUP by a.au_id
-ORDER BY sum(t.royalty*ta.royaltyper*0.01+t.advance)/count(a.au_id) DESC
+ORDER BY sum(t.price * s.qty * t.royalty / 100 * ta.royaltyper / 100) DESC
 LIMIT 3;
