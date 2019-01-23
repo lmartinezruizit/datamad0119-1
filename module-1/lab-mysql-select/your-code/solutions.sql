@@ -52,8 +52,7 @@ LIMIT 23;
 SELECT 
 	a.au_id 'AUTHOR ID', 
 	a.au_lname 'LAST NAME', 
-    a.au_fname 'FIRST NAME', 
-    count(a.au_id),
+    a.au_fname 'FIRST NAME',
 	sum(t.royalty*ta.royaltyper*0.01+t.advance)/count(a.au_id) 'PROFIT'
 FROM authors a
 	INNER JOIN titleauthor ta ON a.au_id=ta.au_id
