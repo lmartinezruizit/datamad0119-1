@@ -1,3 +1,7 @@
+#################CHALLENGE_1#################
+
+#STEP 1#
+/* 
 SELECT
 	t.title_id 'TITLE ID',
 	a.au_id 'AUTHOR ID', 
@@ -6,7 +10,10 @@ FROM authors a
 	INNER JOIN titleauthor ta ON a.au_id=ta.au_id
 	INNER JOIN titles t ON ta.title_id=t.title_id
     INNER JOIN sales s ON s.title_id=t.title_id;
+*/
 
+#STEP 2#
+/*
 SELECT
 	step_2.tID 'TITLE ID',
 	step_2.aID 'AUTHOR ID', 
@@ -21,8 +28,7 @@ FROM (
 			INNER JOIN titles t ON ta.title_id=t.title_id
 			INNER JOIN sales s ON s.title_id=t.title_id) as step_2
 GROUP BY aID,tID;
-
-#####################################################CHALLENGE1
+*/
 
 SELECT
 	DISTINCT(step_3.aID_2) 'AUTHOR ID', 
@@ -46,7 +52,9 @@ GROUP BY step_3.aID_2,step_3.sum_sales
 ORDER BY step_3.sum_sales DESC
 LIMIT 3;
 
-#####################################################CHALLENGE2
+#################CHALLENGE_2#################
+
+#step_1#
 CREATE TEMPORARY TABLE royalty_calculate
 SELECT
 	t.title_id tID,
@@ -57,6 +65,7 @@ FROM authors a
 	INNER JOIN titles t ON ta.title_id=t.title_id
     INNER JOIN sales s ON s.title_id=t.title_id;
 
+#step_2#
 CREATE TEMPORARY TABLE sum_royalty
 SELECT
 	tID,
@@ -65,6 +74,7 @@ SELECT
 FROM royalty_calculate
 GROUP BY aID,tID;
 
+#step_3#
 SELECT
 	DISTINCT(aID) 'AUTHOR ID', 
     sum_sales 'PROFIT'
@@ -74,4 +84,17 @@ GROUP BY aID,sum_sales
 ORDER BY sum_sales DESC
 LIMIT 3;
 
-#####################################################CHALLENGE3
+
+#################CHALLENGE_3#################
+#He utilizado el resultado del CHALLENGE_2 para crear la tabla#
+CREATE TABLE most_profiting_authors
+SELECT
+	DISTINCT(aID) au_id, 
+    sum_sales profits
+FROM
+	sum_royalty
+GROUP BY aID,sum_sales
+ORDER BY sum_sales DESC
+LIMIT 3;
+
+SELECT * from most_profiting_authors;
