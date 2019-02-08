@@ -168,7 +168,7 @@ def report(df,df_worse,df_middle,df_best):
     barmode_chart(df_worse,df_middle,df_best)
 
 def send_mail():
-    command_line = 'echo "El reporte consta de tres gráficos, en los cuales podemos ver los puntos en los que más espera por parte del cliente se produce y los días de la semana más solicitados, en este caso el Viernes" | mail -s "Pipelines-Project Luis" luishcf9@gmail.com'
+    command_line = 'echo "El reporte consta de tres gráficos, en los cuales podemos ver los puntos en los que más espera por parte del cliente se produce y los días de la semana más solicitados, en este caso el Viernes" | mail --attach="./Taxi_Routes_Quito.html" -s "Pipelines-Project Luis" luishcf9@gmail.com'
     process = subprocess.Popen(command_line, shell=True)
     returncode = process.wait()
 
