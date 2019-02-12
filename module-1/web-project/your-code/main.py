@@ -8,10 +8,15 @@ import datetime
 from scraping import IronhackMeetupMembers
 from member import Member
 
+#url to get members from API
 URL='https://api.meetup.com/ironhack-madrid/members?page=200&order=name&offset=%d'
-MEMBER_ENDPOINT = 'https://www.meetup.com/members/%d' # regex pattern for the urls to scrape
+#url to scrape all members
+MEMBER_ENDPOINT = 'https://www.meetup.com/members/%d'
 
-
+"""
+Function who gets all members from API asynchronously and create a member object to assign the values
+that I have selected 
+"""
 async def main():
     loop = asyncio.get_event_loop()
     futures=[]
@@ -28,7 +33,9 @@ async def main():
                 member['country'],
                 member['is_pro_admin']
             )
-            
+            """ 
+            Check if the values exist
+            """
             if 'bio' in member:
                 member_obj.set_bio(member['bio'])
 
@@ -48,11 +55,15 @@ async def main():
     return (data, member_ids)
 
 loop = asyncio.get_event_loop()
+
+#obtain the results of calls to the api
 data, member_ids=loop.run_until_complete(main())
+
+#Obtain the members_groups
 members_groups = IronhackMeetupMembers(MEMBER_ENDPOINT, ids=member_ids)
 members_groups.kickstart()
 
-# members_groups.members_groups
+#Assign groups and return the result as a dict
 for key,member_groups in members_groups.members_groups.items():
     data[key].set_groups(member_groups)
     data[key]=data[key].get_as_dict()
@@ -62,6 +73,7 @@ final_data = {
     'content': data
 }
 
+#Save the data set in a json file
 file_name = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
 with open('result' + file_name + '.json', 'a', encoding='utf-8') as f:
     json.dump(final_data,f)
