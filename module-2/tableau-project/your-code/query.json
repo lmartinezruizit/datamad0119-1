@@ -1,0 +1,35 @@
+{"$and":
+    [
+     {"$or":
+        [
+            {"category_code": "software"},
+            {"category_code": "web"},
+            {"category_code": "mobile"},
+            {"category_code": "games_video"}
+        ]},
+      {"number_of_employees": {"$gt":10}},
+      {"$and":
+         [
+             {"founded_year": {"$gt":2010}},
+             {"deadpooled_year":{"$ne": None}},
+             {"deadpooled_year":{"$exists":True}}
+         ]},
+      {"$and":
+         [
+             {"$or":
+                 [
+                     {"relationships.title":{'$regex':'[Dd]esigner'}},
+                     {"relationships.title":{'$regex':'[Cc]reative'}},
+                     {"relationships.title":{'$regex':'U[XI]'}},
+                     {"relationships.title":{'$regex':'[Cc]reative'}},
+                 ]},
+             {"relationships.title":{'$regex':'[Dd]evelopers'}},
+             {"$or":
+                 [
+                     {"relationships.title":{'$regex':'[Ee]xecutive'}},
+                     {"relationships.title":{'$regex':'[Mm]anager'}}
+                 ]} 
+        ]
+    }
+    ]
+}
