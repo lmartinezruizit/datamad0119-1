@@ -1,4 +1,4 @@
-{"$and":
+filterquery_1={"$and":
     [
      {"$or":
         [
@@ -7,29 +7,55 @@
             {"category_code": "mobile"},
             {"category_code": "games_video"}
         ]},
-      {"number_of_employees": {"$gt":10}},
       {"$and":
          [
-             {"founded_year": {"$gt":2010}},
-             {"deadpooled_year":{"$ne": None}},
-             {"deadpooled_year":{"$exists":True}}
+             {"founded_year": {"$gt":2000}},
+             {"$or":
+              [
+                 {"deadpooled_year":{"$eq": None}},
+                 {"deadpooled_year":{"$exists":False}}
+              ]
+             }
          ]},
-      {"$and":
-         [
-             {"$or":
-                 [
-                     {"relationships.title":{'$regex':'[Dd]esigner'}},
-                     {"relationships.title":{'$regex':'[Cc]reative'}},
-                     {"relationships.title":{'$regex':'U[XI]'}},
-                     {"relationships.title":{'$regex':'[Cc]reative'}},
-                 ]},
-             {"relationships.title":{'$regex':'[Dd]evelopers'}},
-             {"$or":
-                 [
-                     {"relationships.title":{'$regex':'[Ee]xecutive'}},
-                     {"relationships.title":{'$regex':'[Mm]anager'}}
-                 ]} 
-        ]
-    }
+              {"$and":
+       [
+          {"relationships.title":{'$regex':'Software Engineer'}},
+          {"$or":
+             [
+                 {"$or":
+                     [
+                         {"relationships.title":{'$regex':'[Dd]esigner'}},
+                         {"relationships.title":{'$regex':'[Cc]reative'}},
+                         {"relationships.title":{'$regex':'U[XI]'}},
+                         {"relationships.title":{'$regex':'[Cc]reative'}},
+                     ]},
+                 {"relationships.title":{'$regex':'[Dd]evelopers'}},
+                 {"$or":
+                     [
+                         {"relationships.title":{'$regex':'[Ee]xecutive'}},
+                         {"relationships.title":{'$regex':'[Mm]anager'}}
+                     ]} 
+            ]
+          }
+       ]
+      }
     ]
 }
+
+filterquery_2={"$and":
+        [
+            {"position":{"$ne":None}},
+            {
+              "position": {
+                "$near": {
+                  "$geometry": {
+                    "type": "Point",
+                    "coordinates": coord
+                  },
+                  "$minDistance": 0,
+                  "$maxDistance":1000
+                }
+              }
+            }
+        ]
+      }
